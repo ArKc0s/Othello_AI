@@ -45,8 +45,10 @@ class GameWindow:
 
     def draw(self):
         self.screen.fill((0, 200, 0)) 
-        #Dessinne un rectangle gris a droite de la grille
         pygame.draw.rect(self.screen, (50,50,50), (self.height, 0, self.width - self.height, self.height))
+        font = pygame.font.SysFont(None, 36)
+        text = font.render('Joueur vs Joueur', True, (255, 255, 255))
+        self.screen.blit(text, (820, 50))
         cell_size = self.height // 8
         for x in range(8):
             for y in range(8):
