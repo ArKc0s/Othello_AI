@@ -15,7 +15,7 @@ class Board:
                         x, y = col + dx, row + dy
                         while 0 <= x < 8 and 0 <= y < 8:
                             # Si la case adjacente est de la couleur opposée
-                            if self.grid[y][x] == ('black' if color == 'white' else 'white'):
+                            if self.grid[y][x] == ('B' if color == 'W' else 'W'):
                                 x, y = x + dx, y + dy
                                 while 0 <= x < 8 and 0 <= y < 8 and self.grid[y][x] is not None:
                                     if self.grid[y][x] == color:  # On trouve une pièce de notre couleur pour enfermer l'adversaire
@@ -39,7 +39,7 @@ class Board:
             x, y = col + dx, row + dy
             pieces_to_flip = []
             while 0 <= x < 8 and 0 <= y < 8:
-                if self.grid[y][x] == ('black' if color == 'white' else 'white'):
+                if self.grid[y][x] == ('B' if color == 'W' else 'W'):
                     pieces_to_flip.append((x, y))
                     x, y = x + dx, y + dy
                 elif self.grid[y][x] == color:
