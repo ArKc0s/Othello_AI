@@ -50,3 +50,10 @@ class Board:
                     break
 
         return True
+    
+    def is_full(self):
+        for row in self.grid:
+            for cell in row:
+                if cell is None:
+                    return False
+        return True
