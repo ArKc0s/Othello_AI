@@ -11,8 +11,16 @@ class GameWindow:
         # TODO: Charger des assets, initialiser d'autres éléments d'interface
 
     def draw(self):
-        # TODO: Dessiner le plateau et les pièces
-        pass
+        self.screen.fill((0, 200, 0)) 
+        cell_size = self.width // 8
+        for x in range(8):
+            for y in range(8):
+                pygame.draw.rect(self.screen, (0, 255, 0), (x*cell_size, y*cell_size, cell_size, cell_size), 1)  # Dessine les bordures de chaque cellule
+                if self.board.grid[y][x] == 'black':
+                    pygame.draw.circle(self.screen, (0, 0, 0), (int((x+0.5)*cell_size), int((y+0.5)*cell_size)), cell_size//2 - 5)
+                elif self.board.grid[y][x] == 'white':
+                    pygame.draw.circle(self.screen, (255, 255, 255), (int((x+0.5)*cell_size), int((y+0.5)*cell_size)), cell_size//2 - 5)
+
 
     def run(self):
         running = True
