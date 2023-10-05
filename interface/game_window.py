@@ -84,6 +84,9 @@ class GameWindow:
                         game_over = True
                         break
 
+                    if not self.board.valid_moves(current_color):
+                        current_color = "B" if current_color == "W" else "W"
+
                     if event.type == pygame.MOUSEBUTTONUP:
                         x, y = pygame.mouse.get_pos()
                         row, col = self.get_grid_position(x, y)
