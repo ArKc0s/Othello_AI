@@ -43,12 +43,18 @@ class GameWindow:
             pygame.display.flip()
 
 
-    def draw(self):
+    def draw(self, color):
         self.screen.fill((0, 200, 0)) 
         pygame.draw.rect(self.screen, (50,50,50), (self.height, 0, self.width - self.height, self.height))
         font = pygame.font.SysFont(None, 36)
         text = font.render('Joueur vs Joueur', True, (255, 255, 255))
         self.screen.blit(text, (820, 50))
+        if color == 'W':
+            colorLabel = 'Blanc'
+        else:
+            colorLabel = 'Noir'
+        text = font.render('Tour de jeu : ' + colorLabel, True, (255, 255, 255))
+        self.screen.blit(text, (820, 75))
         cell_size = self.height // 8
         for x in range(8):
             for y in range(8):
@@ -91,7 +97,7 @@ class GameWindow:
                     game_over = True
 
                 # Dessin du plateau et mise à jour de l'affichage
-                self.draw()
+                self.draw(current_color)
                 pygame.display.flip()
 
             # Annonce du gagnant ici
