@@ -150,7 +150,7 @@ class GameWindow:
                 pygame.display.flip()
 
         elif mode == "player_vs_ia":
-            ai = MinimaxAI(depth=3)
+            ai = MinimaxAI(depth=4)
             while not game_over:
 
                 if not self.board.valid_moves(current_color):
