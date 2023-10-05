@@ -116,10 +116,10 @@ class GameWindow:
 
 
     def run(self, mode):
-        if mode == "player_vs_player":
-            current_color = "W"  # Commence avec les blancs par exemple
-            game_over = False
+        game_over = False
+        current_color = "W"  # Commence avec les blancs par exemple
 
+        if mode == "player_vs_player":
             while not game_over:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -151,21 +151,20 @@ class GameWindow:
 
         elif mode == "player_vs_ia":
             ai = MinimaxAI(depth=3)
-            game_over = False
-            current_color = "W"
             while not game_over:
+
+                if not self.board.valid_moves(current_color):
+                        current_color = "B" if current_color == "W" else "W"
+
+                if current_color == 'B':  # Supposons que 'B' soit la couleur de l'IA
+                        row, col = ai.best_move(self.board, 'B')  # Trouve le meilleur mouvement
+                        self.board.make_move(row, col, 'B')  # Fait le mouvement
+                        current_color = "W"
+
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         game_over = True
                         break
-
-                    if not self.board.valid_moves(current_color):
-                        current_color = "B" if current_color == "W" else "W"
-
-                    if current_color == 'B':  # Supposons que 'B' soit la couleur de l'IA
-                        row, col = ai.best_move(self.board, 'B')  # Trouve le meilleur mouvement
-                        self.board.make_move(row, col, 'B')  # Fait le mouvement
-                        current_color = "W"
 
                     elif event.type == pygame.MOUSEBUTTONUP:
                         x, y = pygame.mouse.get_pos()
@@ -190,10 +189,29 @@ class GameWindow:
         elif mode == "ia_vs_ia":
             ai1 = MinimaxAI(depth=3)
             ai2 = MinimaxAI(depth=3)
-            # ... (le reste de ton code)
-            if current_color == 'W':
-                row, col = ai1.best_move(self.board, 'W')
-            else:
-                row, col = ai2.best_move(self.board, 'B')
-            self.board.make_move(row, col, current_color)
-            current_color = "B" if current_color == "W" else "W"
+            
+            while not game_over:
+
+                if not self.board.valid_moves(current_color):
+                        current_color = "B" if current_color == "W" else "W"
+
+                if current_color == 'W':
+                    row, col = ai1.best_move(self.board, 'W')
+                else:
+                    row, col = ai2.best_move(self.board, 'B')
+                self.board.make_move(row, col, current_color)
+                current_color = "B" if current_color == "W" else "W"
+
+                # Vérification de la fin de partie
+                if self.board.is_full() or (not self.board.valid_moves("W") and not self.board.valid_moves("B")):
+                    game_over = True
+                    next_action = self.display_winner()
+                    if next_action == 'main_menu':
+                        self.main_menu()  # Retour au menu principal
+                        return
+
+                # Dessin du plateau et mise à jour de l'affichage
+                self.draw(current_color)
+                pygame.display.flip()
+
+           
