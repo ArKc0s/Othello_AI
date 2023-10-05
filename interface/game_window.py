@@ -70,7 +70,48 @@ class GameWindow:
         return int(row), int(col)
 
     def display_winner(self):
-        pass
+        white_count = 0
+        black_count = 0
+        back_to_menu = False
+
+        for row in self.board.grid:
+            for cell in row:
+                if cell == 'W':
+                    white_count += 1
+                elif cell == 'B':
+                    black_count += 1
+
+        font = pygame.font.SysFont(None, 72)
+        if white_count > black_count:
+            winner_text = "Le gagnant est Blanc!"
+        elif black_count > white_count:
+            winner_text = "Le gagnant est Noir!"
+        else:
+            winner_text = "C'est un match nul!"
+
+        text = font.render(winner_text, True, (255, 255, 255))
+        text_rect = text.get_rect(center=(self.width // 2, self.height // 2))
+
+        while not back_to_menu:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return None
+                if event.type == pygame.MOUSEBUTTONUP:
+                    x, y = pygame.mouse.get_pos()
+                    if 400 < x < 700 and 600 < y < 650:
+                        back_to_menu = True
+
+            self.screen.blit(text, text_rect)
+
+            # Dessin du bouton "Retour au menu"
+            pygame.draw.rect(self.screen, (255, 255, 255), (400, 600, 300, 50))
+            small_font = pygame.font.SysFont(None, 36)
+            back_text = small_font.render('Retour au menu', True, (0, 0, 0))
+            self.screen.blit(back_text, (450, 610))
+
+            pygame.display.flip()
+
+        return 'main_menu'
 
 
     def run(self, mode):
@@ -98,10 +139,11 @@ class GameWindow:
                 # Vérification de la fin de partie
                 if self.board.is_full() or (not self.board.valid_moves("W") and not self.board.valid_moves("B")):
                     game_over = True
+                    next_action = self.display_winner()
+                    if next_action == 'main_menu':
+                        self.main_menu()  # Retour au menu principal
+                        return
 
                 # Dessin du plateau et mise à jour de l'affichage
                 self.draw(current_color)
                 pygame.display.flip()
-
-            # Annonce du gagnant ici
-            self.display_winner()
