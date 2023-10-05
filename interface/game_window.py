@@ -150,14 +150,19 @@ class GameWindow:
                 pygame.display.flip()
 
         elif mode == "player_vs_ia":
-            ai = MinimaxAI(depth=4)
+            ai = MinimaxAI(depth=5)
             while not game_over:
 
                 if not self.board.valid_moves(current_color):
                         current_color = "B" if current_color == "W" else "W"
 
                 if current_color == 'B':  # Supposons que 'B' soit la couleur de l'IA
-                        row, col = ai.best_move(self.board, 'B')  # Trouve le meilleur mouvement
+                        #wait 0.5 second
+                        pygame.time.wait(500)
+
+                        bMove = ai.best_move(self.board, 'B')
+                        if bMove != None:
+                            row, col = bMove
                         self.board.make_move(row, col, 'B')  # Fait le mouvement
                         current_color = "W"
 
@@ -174,6 +179,10 @@ class GameWindow:
                             self.board.make_move(row, col, current_color)
                             current_color = "B" if current_color == "W" else "W"
 
+                # Dessin du plateau et mise à jour de l'affichage
+                self.draw(current_color)
+                pygame.display.flip()
+
                 # Vérification de la fin de partie
                 if self.board.is_full() or (not self.board.valid_moves("W") and not self.board.valid_moves("B")):
                     game_over = True
@@ -182,9 +191,7 @@ class GameWindow:
                         self.main_menu()  # Retour au menu principal
                         return
 
-                # Dessin du plateau et mise à jour de l'affichage
-                self.draw(current_color)
-                pygame.display.flip()
+                
            
         elif mode == "ia_vs_ia":
             ai1 = MinimaxAI(depth=3)
@@ -196,11 +203,19 @@ class GameWindow:
                         current_color = "B" if current_color == "W" else "W"
 
                 if current_color == 'W':
-                    row, col = ai1.best_move(self.board, 'W')
+                    bMove = ai1.best_move(self.board, 'W')
+                    if bMove != None:
+                        row, col = bMove
                 else:
-                    row, col = ai2.best_move(self.board, 'B')
+                    bMove = ai2.best_move(self.board, 'B')
+                    if bMove != None:
+                        row, col = bMove
                 self.board.make_move(row, col, current_color)
                 current_color = "B" if current_color == "W" else "W"
+
+                # Dessin du plateau et mise à jour de l'affichage
+                self.draw(current_color)
+                pygame.display.flip()
 
                 # Vérification de la fin de partie
                 if self.board.is_full() or (not self.board.valid_moves("W") and not self.board.valid_moves("B")):
@@ -210,8 +225,7 @@ class GameWindow:
                         self.main_menu()  # Retour au menu principal
                         return
 
-                # Dessin du plateau et mise à jour de l'affichage
-                self.draw(current_color)
-                pygame.display.flip()
+                
+                
 
            

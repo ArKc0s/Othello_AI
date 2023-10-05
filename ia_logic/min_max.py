@@ -36,5 +36,4 @@ class MinimaxAI:
         return best_move
 
     def evaluate(self, board, color):
-        # Ici, tu définis ta fonction d'évaluation. Cela peut être aussi simple que le compte des pions
         return sum(cell == color for row in board.grid for cell in row)
