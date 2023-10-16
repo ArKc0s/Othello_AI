@@ -90,7 +90,7 @@ class GameWindow:
         else:
             winner_text = "C'est un match nul!"
 
-        text = font.render(winner_text, True, (255, 255, 255))
+        text = font.render(winner_text, True, (255, 0, 0))
         text_rect = text.get_rect(center=(self.width // 2, self.height // 2))
 
         while not back_to_menu:
@@ -150,7 +150,7 @@ class GameWindow:
                 pygame.display.flip()
 
         elif mode == "player_vs_ia":
-            ai = MinimaxAI(depth=5)
+            ai = MinimaxAI(depth=3)
             while not game_over:
 
                 if not self.board.valid_moves(current_color):
