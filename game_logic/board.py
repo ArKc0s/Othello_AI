@@ -67,3 +67,8 @@ class Board:
                 if cell is None:
                     return False
         return True
+    
+    def reset(self):
+        self.grid = [[None for _ in range(8)] for _ in range(8)]
+        self.grid[3][3], self.grid[3][4], self.grid[4][3], self.grid[4][4] = 'W', 'B', 'B', 'W'
+        self.move_stack = []

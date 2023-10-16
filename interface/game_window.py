@@ -1,6 +1,7 @@
 import pygame
 from game_logic.board import Board
 from ia_logic.min_max import MinimaxAI
+from ia_logic.alpha_beta import AlphaBetaAI
 
 class GameWindow:
     def __init__(self):
@@ -142,7 +143,9 @@ class GameWindow:
                     game_over = True
                     next_action = self.display_winner()
                     if next_action == 'main_menu':
-                        self.main_menu()  # Retour au menu principal
+                        self.board.reset()
+                        mode = self.main_menu()  # Retour au menu principal
+                        self.run(mode)
                         return
 
                 # Dessin du plateau et mise à jour de l'affichage
@@ -150,7 +153,7 @@ class GameWindow:
                 pygame.display.flip()
 
         elif mode == "player_vs_ia":
-            ai = MinimaxAI(depth=5)
+            ai = AlphaBetaAI(depth=4)
             while not game_over:
 
                 if not self.board.valid_moves(current_color):
@@ -188,7 +191,9 @@ class GameWindow:
                     game_over = True
                     next_action = self.display_winner()
                     if next_action == 'main_menu':
-                        self.main_menu()  # Retour au menu principal
+                        self.board.reset()
+                        mode = self.main_menu()  # Retour au menu principal
+                        self.run(mode)
                         return
 
                 
@@ -222,7 +227,9 @@ class GameWindow:
                     game_over = True
                     next_action = self.display_winner()
                     if next_action == 'main_menu':
-                        self.main_menu()  # Retour au menu principal
+                        self.board.reset()
+                        mode = self.main_menu()  # Retour au menu principal
+                        self.run(mode)
                         return
 
                 
