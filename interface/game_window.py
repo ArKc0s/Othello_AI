@@ -91,7 +91,7 @@ class GameWindow:
         else:
             winner_text = "C'est un match nul!"
 
-        text = font.render(winner_text, True, (255, 255, 255))
+        text = font.render(winner_text, True, (255, 0, 0))
         text_rect = text.get_rect(center=(self.width // 2, self.height // 2))
 
         while not back_to_menu:
