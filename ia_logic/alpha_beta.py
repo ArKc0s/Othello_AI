@@ -5,6 +5,16 @@ class AlphaBetaAI:
         self.depth = depth
         self.timeout = timeout
         self.best_move_so_far = None
+        self.position_weights = [
+            [ 4, -3,  2,  2,  2,  2, -3,  4],
+            [-3, -4, -1, -1, -1, -1, -4, -3],
+            [ 2, -1,  1,  0,  0,  1, -1,  2],
+            [ 2, -1,  0,  1,  1,  0, -1,  2],
+            [ 2, -1,  0,  1,  1,  0, -1,  2],
+            [ 2, -1,  1,  0,  0,  1, -1,  2],
+            [-3, -4, -1, -1, -1, -1, -4, -3],
+            [ 4, -3,  2,  2,  2,  2, -3,  4],
+        ]
 
     
     def timed_alphabeta(self, board, color):
@@ -24,7 +34,7 @@ class AlphaBetaAI:
 
     def alphabeta(self, board, depth, alpha, beta, maximizing, color):
         if depth == 0 or board.is_full():
-            return self.evaluate(board, color)
+            return self.evaluate_pos(board, color)
 
         if maximizing:
             max_eval = float('-inf')
@@ -67,3 +77,12 @@ class AlphaBetaAI:
 
     def evaluate(self, board, color):
         return sum(cell == color for row in board.grid for cell in row)
+    
+    def evaluate_pos(self, board, color):
+        score = 0
+        for i in range(8):
+            for j in range(8):
+                if board.grid[i][j] == color:
+                    score += self.position_weights[i][j]
+        return score
+

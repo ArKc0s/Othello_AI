@@ -10,7 +10,7 @@ class GameWindow:
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('Othello')
         self.board = Board()
-        # TODO: Charger des assets, initialiser d'autres éléments d'interface
+     
 
     def main_menu(self):
         running = True
