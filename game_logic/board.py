@@ -68,7 +68,14 @@ class Board:
                     return False
         return True
     
+    def print_board(self):
+        for row in self.grid:
+            row_str = "|".join([" " if cell is None else cell for cell in row])
+            print(row_str)
+            print("-" * len(row_str))
+    
     def reset(self):
+        self.print_board()
         self.grid = [[None for _ in range(8)] for _ in range(8)]
         self.grid[3][3], self.grid[3][4], self.grid[4][3], self.grid[4][4] = 'W', 'B', 'B', 'W'
         self.move_stack = []
