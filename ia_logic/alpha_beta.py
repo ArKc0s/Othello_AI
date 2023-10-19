@@ -1,6 +1,26 @@
+import threading
+
 class AlphaBetaAI:
-    def __init__(self, depth):
+    def __init__(self, depth, timeout=5):
         self.depth = depth
+        self.timeout = timeout
+        self.best_move_so_far = None
+
+    
+    def timed_alphabeta(self, board, color):
+        self.best_move_so_far = None
+        self.best_move(board, color)
+
+    def best_move_with_timeout(self, board, color):
+        alphabeta_thread = threading.Thread(target=self.timed_alphabeta, args=(board, color))
+        alphabeta_thread.start()
+        alphabeta_thread.join(timeout=self.timeout)
+        
+        if alphabeta_thread.is_alive():
+            print("Timeout, picking best move so far")
+            alphabeta_thread.join()
+
+        return self.best_move_so_far
 
     def alphabeta(self, board, depth, alpha, beta, maximizing, color):
         if depth == 0 or board.is_full():
@@ -42,6 +62,7 @@ class AlphaBetaAI:
                 max_eval = eval
                 best_move = move
                 alpha = max(alpha, eval)
+            self.best_move_so_far = best_move
         return best_move
 
     def evaluate(self, board, color):

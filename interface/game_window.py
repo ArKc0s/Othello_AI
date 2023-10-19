@@ -163,7 +163,7 @@ class GameWindow:
                         #wait 0.5 second
                         pygame.time.wait(500)
 
-                        bMove = ai.best_move(self.board, 'B')
+                        bMove = ai.best_move_with_timeout(self.board, 'B')
                         if bMove != None:
                             row, col = bMove
                         self.board.make_move(row, col, 'B')  # Fait le mouvement
@@ -208,11 +208,11 @@ class GameWindow:
                         current_color = "B" if current_color == "W" else "W"
 
                 if current_color == 'W':
-                    bMove = ai1.best_move(self.board, 'W')
+                    bMove = ai1.best_move_with_timeout(self.board, 'W')
                     if bMove != None:
                         row, col = bMove
                 else:
-                    bMove = ai2.best_move(self.board, 'B')
+                    bMove = ai2.best_move_with_timeout(self.board, 'B')
                     if bMove != None:
                         row, col = bMove
                 self.board.make_move(row, col, current_color)
