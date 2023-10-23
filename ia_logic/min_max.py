@@ -25,6 +25,7 @@ class MinimaxAI:
             [-20, -50, -2, -2, -2, -2, -50, -20],
             [ 100, -20,  10,  5,  5,  10, -20,  100],
         ]
+        self.visited_states = {}
 
     def timed_minmax(self, board, color):
         self.best_move_so_far = None
@@ -45,6 +46,10 @@ class MinimaxAI:
     def minmax(self, board, depth, maximizing, color):
         if depth == 0 or board.is_full():
             return self.evaluate_pos(board, color)
+        
+        board_state = tuple(tuple(row) for row in board.grid)
+        if board_state in self.visited_states:
+            return self.visited_states[board_state]
 
         if maximizing:
             max_eval = float('-inf')
@@ -53,6 +58,7 @@ class MinimaxAI:
                 eval = self.minmax(board, depth - 1, False, 'W' if color == 'B' else 'B')
                 board.undo_move() 
                 max_eval = max(max_eval, eval)
+                self.visited_states[board_state] = max_eval 
             return max_eval
         else:
             min_eval = float('inf')
@@ -61,11 +67,13 @@ class MinimaxAI:
                 eval = self.minmax(board, depth - 1, True, 'W' if color == 'B' else 'B')
                 board.undo_move() 
                 min_eval = min(min_eval, eval)
+                self.visited_states[board_state] = min_eval
             return min_eval
 
     def best_move(self, board, color):
         max_eval = float('-inf')
         best_move = None
+        board_state = tuple(tuple(row) for row in board.grid)
         for move in board.valid_moves(color):
             board.make_move(move[0], move[1], color)
             eval = self.minmax(board, self.depth - 1, False, 'W' if color == 'B' else 'B')
@@ -74,7 +82,8 @@ class MinimaxAI:
             if eval > max_eval:
                 max_eval = eval
                 best_move = move
-            self.best_move_so_far = best_move 
+            self.best_move_so_far = best_move
+        self.visited_states[board_state] = max_eval 
         return best_move
 
     def evaluate(self, board, color):
