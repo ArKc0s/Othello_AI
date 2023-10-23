@@ -118,11 +118,16 @@ class GameWindow:
             pygame.display.flip()
 
 
-    def draw(self, color):
+    def draw(self, mode, color):
         self.screen.fill((0, 200, 0)) 
         pygame.draw.rect(self.screen, (50,50,50), (self.height, 0, self.width - self.height, self.height))
         font = pygame.font.SysFont(None, 36)
-        text = font.render('Joueur vs Joueur', True, (255, 255, 255))
+        if(mode == 'player_vs_ia'):
+            text = font.render('Joueur vs IA', True, (255, 255, 255))
+        elif(mode == 'ia_vs_ia'):
+            text = font.render('IA vs IA', True, (255, 255, 255))
+        else:
+            text = font.render('Joueur vs Joueur', True, (255, 255, 255))
         self.screen.blit(text, (820, 50))
         if color == 'W':
             colorLabel = 'Blanc'
@@ -156,7 +161,6 @@ class GameWindow:
                 elif cell == 'B':
                     black_count += 1
 
-        font = pygame.font.SysFont(None, 72)
         if white_count > black_count:
             winner_text = "Le gagnant est Blanc!"
         elif black_count > white_count:
@@ -164,8 +168,9 @@ class GameWindow:
         else:
             winner_text = "C'est un match nul!"
 
-        text = font.render(winner_text, True, (255, 0, 0))
-        text_rect = text.get_rect(center=(self.width // 2, self.height // 2))
+        font = pygame.font.SysFont(None, 36)
+        text = font.render(winner_text, True, (255, 255, 255))
+        self.screen.blit(text, (825, 700))
 
         while not back_to_menu:
             for event in pygame.event.get():
@@ -173,16 +178,16 @@ class GameWindow:
                     return None
                 if event.type == pygame.MOUSEBUTTONUP:
                     x, y = pygame.mouse.get_pos()
-                    if 400 < x < 700 and 600 < y < 650:
+                    if 825 < x < 1075 and 750 < y < 800:
                         back_to_menu = True
 
-            self.screen.blit(text, text_rect)
+            
 
             # Dessin du bouton "Retour au menu"
-            pygame.draw.rect(self.screen, (255, 255, 255), (400, 600, 300, 50))
+            pygame.draw.rect(self.screen, (255, 255, 255), (825, 740, 250, 50))
             small_font = pygame.font.SysFont(None, 36)
             back_text = small_font.render('Retour au menu', True, (0, 0, 0))
-            self.screen.blit(back_text, (450, 610))
+            self.screen.blit(back_text, (860, 750))
 
             pygame.display.flip()
 
@@ -222,7 +227,7 @@ class GameWindow:
                         return
 
                 # Dessin du plateau et mise à jour de l'affichage
-                self.draw(current_color)
+                self.draw(mode, current_color)
                 pygame.display.flip()
 
         elif mode == "player_vs_ia":
@@ -256,7 +261,7 @@ class GameWindow:
                             current_color = "B" if current_color == "W" else "W"
 
                 # Dessin du plateau et mise à jour de l'affichage
-                self.draw(current_color)
+                self.draw(mode, current_color)
                 pygame.display.flip()
 
                 # Vérification de la fin de partie
@@ -292,7 +297,7 @@ class GameWindow:
                 current_color = "B" if current_color == "W" else "W"
 
                 # Dessin du plateau et mise à jour de l'affichage
-                self.draw(current_color)
+                self.draw(mode, current_color)
                 pygame.display.flip()
 
                 # Vérification de la fin de partie
