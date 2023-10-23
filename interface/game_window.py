@@ -43,11 +43,11 @@ class GameWindow:
                                 depth = int(depth)
                             
                             if algo_choice1 == 'minmax':
-                                self.ia1 = MinimaxAI(depth)
+                                self.ia1 = MinimaxAI(depth, eval_choice1)
                             elif algo_choice1 == 'alphabeta':
-                                self.ia1 = AlphaBetaAI(depth)
+                                self.ia1 = AlphaBetaAI(depth, eval_choice1)
                             elif algo_choice1 == 'negamax':
-                                self.ia1 = MinimaxAI(depth)
+                                self.ia1 = MinimaxAI(depth, eval_choice1)
 
                             return 'player_vs_ia'
                         elif 350 < y < 400:
@@ -67,21 +67,21 @@ class GameWindow:
                                 depth2 = int(depth2)
                             
                             if algo_choice1 == 'minmax':
-                                self.ia1 = MinimaxAI(depth1)
+                                self.ia1 = MinimaxAI(depth1, eval_choice1)
                             elif algo_choice1 == 'alphabeta':
-                                self.ia1 = AlphaBetaAI(depth1)
+                                self.ia1 = AlphaBetaAI(depth1, eval_choice1)
                             elif algo_choice1 == 'negamax':
-                                self.ia1 = MinimaxAI(depth1)
+                                self.ia1 = MinimaxAI(depth1, eval_choice1)
 
                             algo_choice2 = algo_menu2.selected_option
                             eval_choice2 = eval_menu2.selected_option
                           
                             if algo_choice2 == 'minmax':
-                                self.ia2 = MinimaxAI(depth2)
+                                self.ia2 = MinimaxAI(depth2, eval_choice2)
                             elif algo_choice2 == 'alphabeta':
-                                self.ia2 = AlphaBetaAI(depth2)
+                                self.ia2 = AlphaBetaAI(depth2, eval_choice2)
                             elif algo_choice2 == 'negamax':
-                                self.ia2 = MinimaxAI(depth2)
+                                self.ia2 = MinimaxAI(depth2, eval_choice2)
 
                             return 'ia_vs_ia'
                         

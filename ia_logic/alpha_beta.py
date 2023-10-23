@@ -1,8 +1,9 @@
 import threading
 
 class AlphaBetaAI:
-    def __init__(self, depth, timeout=5):
+    def __init__(self, depth, eval, timeout=5):
         self.depth = depth
+        self.eval = eval
         self.timeout = timeout
         self.best_move_so_far = None
         self.position_weights = [
@@ -95,15 +96,22 @@ class AlphaBetaAI:
             self.best_move_so_far = best_move
         self.visited_states[board_state] = max_eval
         return best_move
-
-    def evaluate(self, board, color):
-        return sum(cell == color for row in board.grid for cell in row)
     
     def evaluate_pos(self, board, color):
-        score = 0
-        for i in range(8):
-            for j in range(8):
-                if board.grid[i][j] == color:
-                    score += self.position_weights[i][j]
-        return score
+        if(self.eval == "absolu"):
+            return sum(cell == color for row in board.grid for cell in row)
+        elif(self.eval == "positionnel 1"):
+            score = 0
+            for i in range(8):
+                for j in range(8):
+                    if board.grid[i][j] == color:
+                        score += self.position_weights[i][j]
+            return score
+        elif(self.eval == "positionnel 2"):
+            score = 0
+            for i in range(8):
+                for j in range(8):
+                    if board.grid[i][j] == color:
+                        score += self.position_weights2[i][j]
+            return score
 
