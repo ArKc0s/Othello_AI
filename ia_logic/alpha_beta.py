@@ -6,15 +6,26 @@ class AlphaBetaAI:
         self.timeout = timeout
         self.best_move_so_far = None
         self.position_weights = [
-            [ 4, -3,  2,  2,  2,  2, -3,  4],
-            [-3, -4, -1, -1, -1, -1, -4, -3],
-            [ 2, -1,  1,  0,  0,  1, -1,  2],
-            [ 2, -1,  0,  1,  1,  0, -1,  2],
-            [ 2, -1,  0,  1,  1,  0, -1,  2],
-            [ 2, -1,  1,  0,  0,  1, -1,  2],
-            [-3, -4, -1, -1, -1, -1, -4, -3],
-            [ 4, -3,  2,  2,  2,  2, -3,  4],
+            [ 500, -150,  30,  10,  10,  30, -150,  500],
+            [-150, -250, 0, 0, 0, 0, -250, -150],
+            [ 30, 0,  1,  2,  2,  1, 0,  30],
+            [ 10, 0,  2,  16,  16,  2, 0,  10],
+            [ 10, 0,  2,  16,  16,  2, 0,  10],
+            [ 30, 0,  1,  2,  2,  1, 0,  30],
+            [-150, -250, 0, 0, 0, 0, -250, -150],
+            [ 500, -150,  30,  10,  10,  30, -150,  500],
         ]
+        self.position_weights2 = [
+            [ 100, -20,  10,  5,  5,  10, -20,  100],
+            [-20, -50, -2, -2, -2, -2, -50, -20],
+            [ 10, -2,  -1,  -1,  -1,  -1, -2,  10],
+            [ 5, -2,  -1,  -1,  -1,  -1, -2,  5],
+            [ 5, -2,  -1,  -1,  -1,  -1, -2,  5],
+            [ 10, -2,  -1,  -1,  -1,  -1, -2,  10],
+            [-20, -50, -2, -2, -2, -2, -50, -20],
+            [ 100, -20,  10,  5,  5,  10, -20,  100],
+        ]
+        self.visited_states = {}
 
         print("AlphaBeta AI initialized with depth", depth)
 
@@ -37,6 +48,10 @@ class AlphaBetaAI:
     def alphabeta(self, board, depth, alpha, beta, maximizing, color):
         if depth == 0 or board.is_full():
             return self.evaluate_pos(board, color)
+        
+        board_state = tuple(tuple(row) for row in board.grid)
+        if board_state in self.visited_states:
+            return self.visited_states[board_state]
 
         if maximizing:
             max_eval = float('-inf')
@@ -48,6 +63,7 @@ class AlphaBetaAI:
                 alpha = max(alpha, eval)
                 if beta <= alpha:
                     break
+            self.visited_states[board_state] = max_eval
             return max_eval
         else:
             min_eval = float('inf')
@@ -59,6 +75,7 @@ class AlphaBetaAI:
                 beta = min(beta, eval)
                 if beta <= alpha:
                     break
+            self.visited_states[board_state] = min_eval
             return min_eval
 
     def best_move(self, board, color):
@@ -66,6 +83,7 @@ class AlphaBetaAI:
         best_move = None
         alpha = float('-inf')
         beta = float('inf')
+        board_state = tuple(tuple(row) for row in board.grid)
         for move in board.valid_moves(color):
             board.make_move(move[0], move[1], color)
             eval = self.alphabeta(board, self.depth - 1, alpha, beta, False, 'W' if color == 'B' else 'B')
@@ -75,6 +93,7 @@ class AlphaBetaAI:
                 best_move = move
                 alpha = max(alpha, eval)
             self.best_move_so_far = best_move
+        self.visited_states[board_state] = max_eval
         return best_move
 
     def evaluate(self, board, color):
