@@ -27,6 +27,8 @@ class MinimaxAI:
         ]
         self.visited_states = {}
 
+        print("Minimax AI initialized with depth", depth)
+
     def timed_minmax(self, board, color):
         self.best_move_so_far = None
         self.best_move(board, color)

@@ -10,10 +10,17 @@ class GameWindow:
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption('Othello')
         self.board = Board()
-     
+        self.ia1 = None
+        self.ia2 = None
 
     def main_menu(self):
         running = True
+        algo_menu1 = DropdownMenu(100, 500, 200, 40, ['minmax', 'alphabeta', 'negamax'])
+        eval_menu1 = DropdownMenu(100, 600, 200, 40, ['absolu', 'positionnel 1', 'positionnel 2', 'mobilité'])
+        algo_menu2 = DropdownMenu(800, 500, 200, 40, ['minmax', 'alphabeta', 'negamax'])
+        eval_menu2 = DropdownMenu(800, 600, 200, 40, ['absolu', 'positionnel 1', 'positionnel 2', 'mobilité'])
+        input_box1 = InputBox(100, 450, 140, 32)
+        input_box2 = InputBox(800, 450, 140, 32)
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -21,26 +28,92 @@ class GameWindow:
                 if event.type == pygame.MOUSEBUTTONUP:
                     x, y = pygame.mouse.get_pos()
                     
-                    if 100 < x < 300:
+                    if 400 < x < 700:
                         if 200 < y < 250:
                             return 'player_vs_player'
                         elif 300 < y < 350:
+
+                            algo_choice1 = algo_menu1.selected_option
+                            eval_choice1 = eval_menu1.selected_option
+                            depth = input_box1.text
+
+                            if depth == '' or depth == None or not depth.isdigit():
+                                depth = 3
+                            else:
+                                depth = int(depth)
+                            
+                            if algo_choice1 == 'minmax':
+                                self.ia1 = MinimaxAI(depth)
+                            elif algo_choice1 == 'alphabeta':
+                                self.ia1 = AlphaBetaAI(depth)
+                            elif algo_choice1 == 'negamax':
+                                self.ia1 = MinimaxAI(depth)
+
                             return 'player_vs_ia'
                         elif 400 < y < 450:
+                            algo_choice1 = algo_menu1.selected_option
+                            eval_choice1 = eval_menu1.selected_option
+                            depth1 = input_box1.text
+                            depth2 = input_box2.text
+
+                            if depth1 == '' or depth1 == None or not depth1.isdigit():
+                                depth1 = 3
+                            else:
+                                depth1 = int(depth1)
+
+                            if depth2 == '' or depth2 == None or not depth2.isdigit():
+                                depth2 = 3
+                            else:
+                                depth2 = int(depth2)
+                            
+                            if algo_choice1 == 'minmax':
+                                self.ia1 = MinimaxAI(depth1)
+                            elif algo_choice1 == 'alphabeta':
+                                self.ia1 = AlphaBetaAI(depth1)
+                            elif algo_choice1 == 'negamax':
+                                self.ia1 = MinimaxAI(depth1)
+
+                            algo_choice2 = algo_menu2.selected_option
+                            eval_choice2 = eval_menu2.selected_option
+                          
+                            if algo_choice2 == 'minmax':
+                                self.ia2 = MinimaxAI(depth2)
+                            elif algo_choice2 == 'alphabeta':
+                                self.ia2 = AlphaBetaAI(depth2)
+                            elif algo_choice2 == 'negamax':
+                                self.ia2 = MinimaxAI(depth2)
+
                             return 'ia_vs_ia'
+                        
+                algo_menu1.handle_event(event)
+                eval_menu1.handle_event(event)
+                algo_menu2.handle_event(event)
+                eval_menu2.handle_event(event)
+                input_box1.handle_event(event)
+                input_box2.handle_event(event)
 
             self.screen.fill((144, 238, 144))
-            pygame.draw.rect(self.screen, (0, 0, 0), (100, 200, 200, 50))
-            pygame.draw.rect(self.screen, (0, 0, 0), (100, 300, 200, 50))
-            pygame.draw.rect(self.screen, (0, 0, 0), (100, 400, 200, 50))
+            pygame.draw.rect(self.screen, (0, 0, 0), (400, 200, 300, 50))
+            pygame.draw.rect(self.screen, (0, 0, 0), (400, 300, 300, 50))
+            pygame.draw.rect(self.screen, (0, 0, 0), (400, 400, 300, 50))
 
+            font = pygame.font.SysFont(None, 50)
+            text= font.render('Othello AI', True, (255, 255, 255))
+            self.screen.blit(text, (470, 100))
             font = pygame.font.SysFont(None, 36)
             text = font.render('Joueur vs Joueur', True, (255, 255, 255))
-            self.screen.blit(text, (110, 210))
+            self.screen.blit(text, (445, 210))
             text = font.render('Joueur vs IA', True, (255, 255, 255))
-            self.screen.blit(text, (110, 310))
+            self.screen.blit(text, (475, 310))
             text = font.render('IA vs IA', True, (255, 255, 255))
-            self.screen.blit(text, (110, 410))
+            self.screen.blit(text, (505, 410))
+
+            algo_menu1.draw(self.screen)
+            eval_menu1.draw(self.screen)
+            algo_menu2.draw(self.screen)
+            eval_menu2.draw(self.screen)
+            input_box1.draw(self.screen)
+            input_box2.draw(self.screen)
 
             pygame.display.flip()
 
@@ -153,7 +226,7 @@ class GameWindow:
                 pygame.display.flip()
 
         elif mode == "player_vs_ia":
-            ai = AlphaBetaAI(depth=4)
+            ai = self.ia1
             while not game_over:
 
                 if not self.board.valid_moves(current_color):
@@ -199,8 +272,8 @@ class GameWindow:
                 
            
         elif mode == "ia_vs_ia":
-            ai1 = MinimaxAI(depth=3)
-            ai2 = MinimaxAI(depth=3)
+            ai1 = self.ia1
+            ai2 = self.ia2
             
             while not game_over:
 
@@ -232,7 +305,70 @@ class GameWindow:
                         self.run(mode)
                         return
 
+class DropdownMenu:
+    def __init__(self, x, y, w, h, options):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.options = options
+        self.selected_option = options[0]
+        self.is_open = False
+        self.font = pygame.font.SysFont(None, 36)
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, (0, 0, 0), (self.x, self.y, self.w, self.h))
+        text = self.font.render(self.selected_option, True, (255, 255, 255))
+        screen.blit(text, (self.x + 10, self.y + 10))
+        
+        if self.is_open:
+            for i, option in enumerate(self.options):
+                pygame.draw.rect(screen, (0, 0, 0), (self.x, self.y + (i+1)*self.h, self.w, self.h))
+                text = self.font.render(option, True, (255, 255, 255))
+                screen.blit(text, (self.x + 10, self.y + (i+1)*self.h + 10))
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONUP:
+            x, y = pygame.mouse.get_pos()
+            if self.x < x < self.x + self.w and self.y < y < self.y + self.h:
+                self.is_open = not self.is_open
+                return True
+            elif self.is_open:
+                for i, option in enumerate(self.options):
+                    if self.x < x < self.x + self.w and self.y + (i+1)*self.h < y < self.y + (i+2)*self.h:
+                        self.selected_option = option
+                        self.is_open = False
+                        return True
+        return False               
                 
-                
+class InputBox:
+    def __init__(self, x, y, w, h, text=''):
+        self.rect = pygame.Rect(x, y, w, h)
+        self.color = (255, 255, 255)
+        self.text = text
+        self.font = pygame.font.Font(None, 32)
+        self.txt_surface = self.font.render(text, True, self.color)
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos):
+                self.color = (0, 128, 255)
+            else:
+                self.color = (255, 255, 255)
+        elif event.type == pygame.KEYDOWN:
+            if self.color == (0, 128, 255):
+                if event.key == pygame.K_RETURN:
+                    depth = int(self.text)
+                    self.text = ''
+                    return depth
+                elif event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    self.text += event.unicode
+                self.txt_surface = self.font.render(self.text, True, self.color)
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, self.rect, 2)
+        screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
 
            

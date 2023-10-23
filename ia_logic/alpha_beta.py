@@ -16,6 +16,8 @@ class AlphaBetaAI:
             [ 4, -3,  2,  2,  2,  2, -3,  4],
         ]
 
+        print("AlphaBeta AI initialized with depth", depth)
+
     
     def timed_alphabeta(self, board, color):
         self.best_move_so_far = None
