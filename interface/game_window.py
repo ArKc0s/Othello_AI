@@ -15,12 +15,12 @@ class GameWindow:
 
     def main_menu(self):
         running = True
-        algo_menu1 = DropdownMenu(100, 500, 200, 40, ['minmax', 'alphabeta', 'negamax'])
-        eval_menu1 = DropdownMenu(100, 600, 200, 40, ['absolu', 'positionnel 1', 'positionnel 2', 'mobilité'])
-        algo_menu2 = DropdownMenu(800, 500, 200, 40, ['minmax', 'alphabeta', 'negamax'])
-        eval_menu2 = DropdownMenu(800, 600, 200, 40, ['absolu', 'positionnel 1', 'positionnel 2', 'mobilité'])
-        input_box1 = InputBox(100, 450, 140, 32)
-        input_box2 = InputBox(800, 450, 140, 32)
+        algo_menu1 = DropdownMenu(50, 600, 200, 40, ['minmax', 'alphabeta', 'negamax'], "Algo")
+        eval_menu1 = DropdownMenu(275, 600, 200, 40, ['absolu', 'positionnel 1', 'positionnel 2', 'mobilité'], "Evaluation")
+        algo_menu2 = DropdownMenu(625, 600, 200, 40, ['minmax', 'alphabeta', 'negamax'], "Algo")
+        eval_menu2 = DropdownMenu(850, 600, 200, 40, ['absolu', 'positionnel 1', 'positionnel 2', 'mobilité'], "Evaluation")
+        input_box1 = InputBox(50, 520, 140, 32, label='Profondeur')
+        input_box2 = InputBox(625, 520, 140, 32, label='Profondeur')
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -29,9 +29,9 @@ class GameWindow:
                     x, y = pygame.mouse.get_pos()
                     
                     if 400 < x < 700:
-                        if 200 < y < 250:
+                        if 150 < y < 200:
                             return 'player_vs_player'
-                        elif 300 < y < 350:
+                        elif 250 < y < 300:
 
                             algo_choice1 = algo_menu1.selected_option
                             eval_choice1 = eval_menu1.selected_option
@@ -50,7 +50,7 @@ class GameWindow:
                                 self.ia1 = MinimaxAI(depth)
 
                             return 'player_vs_ia'
-                        elif 400 < y < 450:
+                        elif 350 < y < 400:
                             algo_choice1 = algo_menu1.selected_option
                             eval_choice1 = eval_menu1.selected_option
                             depth1 = input_box1.text
@@ -92,21 +92,21 @@ class GameWindow:
                 input_box1.handle_event(event)
                 input_box2.handle_event(event)
 
-            self.screen.fill((144, 238, 144))
-            pygame.draw.rect(self.screen, (0, 0, 0), (400, 200, 300, 50))
-            pygame.draw.rect(self.screen, (0, 0, 0), (400, 300, 300, 50))
-            pygame.draw.rect(self.screen, (0, 0, 0), (400, 400, 300, 50))
+            self.screen.fill((120, 138, 163))
+            pygame.draw.rect(self.screen, (0, 0, 0), (400, 150, 300, 50))
+            pygame.draw.rect(self.screen, (0, 0, 0), (400, 250, 300, 50))
+            pygame.draw.rect(self.screen, (0, 0, 0), (400, 350, 300, 50))
 
             font = pygame.font.SysFont(None, 50)
             text= font.render('Othello AI', True, (255, 255, 255))
-            self.screen.blit(text, (470, 100))
+            self.screen.blit(text, (470, 50))
             font = pygame.font.SysFont(None, 36)
             text = font.render('Joueur vs Joueur', True, (255, 255, 255))
-            self.screen.blit(text, (445, 210))
+            self.screen.blit(text, (445, 160))
             text = font.render('Joueur vs IA', True, (255, 255, 255))
-            self.screen.blit(text, (475, 310))
+            self.screen.blit(text, (475, 260))
             text = font.render('IA vs IA', True, (255, 255, 255))
-            self.screen.blit(text, (505, 410))
+            self.screen.blit(text, (505, 360))
 
             algo_menu1.draw(self.screen)
             eval_menu1.draw(self.screen)
@@ -306,7 +306,7 @@ class GameWindow:
                         return
 
 class DropdownMenu:
-    def __init__(self, x, y, w, h, options):
+    def __init__(self, x, y, w, h, options, label):
         self.x = x
         self.y = y
         self.w = w
@@ -315,8 +315,12 @@ class DropdownMenu:
         self.selected_option = options[0]
         self.is_open = False
         self.font = pygame.font.SysFont(None, 36)
+        self.label = label
+        self.label_font = pygame.font.SysFont(None, 24)
 
     def draw(self, screen):
+        label_surface = self.label_font.render(self.label, True, (255, 255, 255))
+        screen.blit(label_surface, (self.x, self.y - 30))
         pygame.draw.rect(screen, (0, 0, 0), (self.x, self.y, self.w, self.h))
         text = self.font.render(self.selected_option, True, (255, 255, 255))
         screen.blit(text, (self.x + 10, self.y + 10))
@@ -342,12 +346,14 @@ class DropdownMenu:
         return False               
                 
 class InputBox:
-    def __init__(self, x, y, w, h, text=''):
+    def __init__(self, x, y, w, h, text='', label = ''):
         self.rect = pygame.Rect(x, y, w, h)
         self.color = (255, 255, 255)
         self.text = text
         self.font = pygame.font.Font(None, 32)
         self.txt_surface = self.font.render(text, True, self.color)
+        self.label = label
+        self.label_font = pygame.font.SysFont(None, 24)
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -366,8 +372,10 @@ class InputBox:
                 else:
                     self.text += event.unicode
                 self.txt_surface = self.font.render(self.text, True, self.color)
-
+        
     def draw(self, screen):
+        label_surface = self.label_font.render(self.label, True, (255, 255, 255))
+        screen.blit(label_surface, (self.rect.x, self.rect.y - 30))
         pygame.draw.rect(screen, self.color, self.rect, 2)
         screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
 
