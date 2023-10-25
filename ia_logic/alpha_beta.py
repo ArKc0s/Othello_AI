@@ -97,21 +97,65 @@ class AlphaBetaAI:
         self.visited_states[board_state] = max_eval
         return best_move
     
-    def evaluate_pos(self, board, color):
-        if(self.eval == "absolu"):
-            return sum(cell == color for row in board.grid for cell in row)
-        elif(self.eval == "positionnel 1"):
+    def absolu(self, board, color):
+        return sum(cell == color for row in board.grid for cell in row)
+    
+    def positionnel(self, board, color, int):
+        if int == 1:
             score = 0
             for i in range(8):
                 for j in range(8):
                     if board.grid[i][j] == color:
                         score += self.position_weights[i][j]
             return score
-        elif(self.eval == "positionnel 2"):
+        else: 
             score = 0
             for i in range(8):
                 for j in range(8):
                     if board.grid[i][j] == color:
                         score += self.position_weights2[i][j]
             return score
+        
+    def mobilite(self, board, color):
+        opponent_color = 'W' if color == 'B' else 'B'
+            
+        my_moves = len(board.valid_moves(color))
+        opponent_moves = len(board.valid_moves(opponent_color))
+        
+        # Attribue des poids élevés aux coins
+        corners = [(0,0), (0,7), (7,0), (7,7)]
+        corner_score = 0
+        for x, y in corners:
+            if board.grid[x][y] == color:
+                corner_score += 1000
+            elif board.grid[x][y] == opponent_color:
+                corner_score -= 1000
+        
+        return (my_moves - opponent_moves) + corner_score
+    
+    def mixte(self, board, color):
+        num_empty_cells = sum(cell is None for row in board.grid for cell in row)
+        num_total_cells = 8 * 8  # pour un plateau 8x8
+        num_played_cells = num_total_cells - num_empty_cells
+
+        if num_played_cells <= 25:  # Début de partie
+            return self.positionnel(board, color, 1)  # Utiliser "1" ou "2" selon la stratégie de positionnement que tu veux
+        elif 25 < num_played_cells <= (num_total_cells - 16):  # Milieu de partie
+            return self.mobilite(board, color)
+        else:  # Fin de partie
+            return self.absolu(board, color)
+
+    
+    def evaluate_pos(self, board, color):
+        if(self.eval == "absolu"):
+            return self.absolu(board, color)
+        elif(self.eval == "positionnel 1"):
+            return self.positionnel(board, color, 1)
+        elif(self.eval == "positionnel 2"):
+            return self.positionnel(board, color, 2)
+        elif self.eval == "mobilité":
+            return self.mobilite(board, color)
+        elif self.eval == "mixte":
+            return self.mixte(board, color)
+            
 

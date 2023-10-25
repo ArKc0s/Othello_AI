@@ -16,12 +16,12 @@ class GameWindow:
 
     def main_menu(self):
         running = True
-        algo_menu1 = DropdownMenu(50, 600, 200, 40, ['minmax', 'alphabeta', 'negamax'], "Algo")
-        eval_menu1 = DropdownMenu(275, 600, 200, 40, ['absolu', 'positionnel 1', 'positionnel 2', 'mobilité'], "Evaluation")
-        algo_menu2 = DropdownMenu(625, 600, 200, 40, ['minmax', 'alphabeta', 'negamax'], "Algo")
-        eval_menu2 = DropdownMenu(850, 600, 200, 40, ['absolu', 'positionnel 1', 'positionnel 2', 'mobilité'], "Evaluation")
-        input_box1 = InputBox(50, 520, 140, 32, label='Profondeur')
-        input_box2 = InputBox(625, 520, 140, 32, label='Profondeur')
+        algo_menu1 = DropdownMenu(50, 550, 200, 40, ['minmax', 'alphabeta', 'negamax'], "Algo")
+        eval_menu1 = DropdownMenu(275, 550, 200, 40, ['absolu', 'positionnel 1', 'positionnel 2', 'mobilité', 'mixte'], "Evaluation")
+        algo_menu2 = DropdownMenu(625, 550, 200, 40, ['minmax', 'alphabeta', 'negamax'], "Algo")
+        eval_menu2 = DropdownMenu(850, 550, 200, 40, ['absolu', 'positionnel 1', 'positionnel 2', 'mobilité', 'mixte'], "Evaluation")
+        input_box1 = InputBox(50, 470, 140, 32, label='Profondeur')
+        input_box2 = InputBox(625, 470, 140, 32, label='Profondeur')
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
