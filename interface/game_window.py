@@ -3,6 +3,7 @@ from game_logic.board import Board
 from ia_logic.min_max import MinimaxAI
 from ia_logic.alpha_beta import AlphaBetaAI
 from ia_logic.nega_max import NegaMaxAI
+import time
 
 class GameWindow:
     def __init__(self):
@@ -199,6 +200,10 @@ class GameWindow:
         game_over = False
         current_color = "W"  # Commence avec les blancs par exemple
 
+        total_time = 0.0
+        total_time_ai1 = 0.0
+        total_time_ai2 = 0.0
+
         if mode == "player_vs_player":
             while not game_over:
                 for event in pygame.event.get():
@@ -287,11 +292,24 @@ class GameWindow:
                         current_color = "B" if current_color == "W" else "W"
 
                 if current_color == 'W':
+                    start_time = time.time()
                     bMove = ai1.best_move_with_timeout(self.board, 'W')
+                    end_time = time.time()
+
+                    print("Temps de calcul de l'IA 1 :", end_time - start_time)
+                    total_time += end_time - start_time
+                    total_time_ai1 += end_time - start_time
+
                     if bMove != None:
                         row, col = bMove
                 else:
+                    start_time = time.time()
                     bMove = ai2.best_move_with_timeout(self.board, 'B')
+                    end_time = time.time()
+                    print("Temps de calcul de l'IA 2 :", end_time - start_time)
+                    total_time += end_time - start_time
+                    total_time_ai2 += end_time - start_time
+                    
                     if bMove != None:
                         row, col = bMove
                 self.board.make_move(row, col, current_color)
@@ -304,6 +322,9 @@ class GameWindow:
                 # Vérification de la fin de partie
                 if self.board.is_full() or (not self.board.valid_moves("W") and not self.board.valid_moves("B")):
                     game_over = True
+                    print("Temps de calcul total :", total_time)
+                    print("Temps de calcul total IA 1 :", total_time_ai1)
+                    print("Temps de calcul total IA 2 :", total_time_ai2)
                     next_action = self.display_winner()
                     if next_action == 'main_menu':
                         self.board.reset()
