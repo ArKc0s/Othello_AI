@@ -1,11 +1,21 @@
 import threading
 
 class MinimaxAI:
+    """
+    Classe implémentant l'algorithme de recherche Min-Max pour le jeu Othello.
+    """
     def __init__(self, depth, eval, timeout=5):
+        """
+        Initialisation de l'IA avec la profondeur de recherche, la méthode d'évaluation,
+        et le temps maximum de recherche pour chaque coup.
+        """
+        # Paramètres de configuration de l'IA
         self.depth = depth
         self.eval = eval
         self.timeout = timeout
         self.best_move_so_far = None
+
+        # Matrices de poids pour l'évaluation de la stratégie positionnelle
         self.position_weights = [
             [ 500, -150,  30,  10,  10,  30, -150,  500],
             [-150, -250, 0, 0, 0, 0, -250, -150],
@@ -26,15 +36,23 @@ class MinimaxAI:
             [-20, -50, -2, -2, -2, -2, -50, -20],
             [ 100, -20,  10,  5,  5,  10, -20,  100],
         ]
-        self.visited_states = {}
+        self.visited_states = {}  # Un dictionnaire pour stocker les états visités et leurs évaluations
 
         print("Minimax AI initialized with depth", depth)
 
     def timed_minmax(self, board, color):
+        """
+        Lance une recherche minmax avec un contrôle de temps.
+        """
         self.best_move_so_far = None
         self.best_move(board, color)
 
     def best_move_with_timeout(self, board, color):
+        """
+        Détermine le meilleur coup avec le contrôle du temps d'exécution.
+        Si le temps imparti est dépassé, le meilleur coup trouvé jusqu'à présent est retourné.
+        """
+        # Exécution de la recherche minmax dans un thread séparé pour respecter le timeout
         minimax_thread = threading.Thread(target=self.timed_minmax, args=(board, color))
         minimax_thread.start()
         minimax_thread.join(timeout=self.timeout)
@@ -47,9 +65,14 @@ class MinimaxAI:
 
 
     def minmax(self, board, depth, maximizing, color):
+         """
+        Implémentation de l'algorithme de recherche minmax.
+        """
+        # Base de récursivité : si la profondeur est nulle ou le plateau est plein
         if depth == 0 or board.is_full():
             return self.evaluate_pos(board, color)
-        
+
+        # Traitement récursif des mouvements
         board_state = tuple(tuple(row) for row in board.grid)
         if board_state in self.visited_states:
             return self.visited_states[board_state]
@@ -74,6 +97,10 @@ class MinimaxAI:
             return min_eval
 
     def best_move(self, board, color):
+         """
+        Trouve le meilleur coup à jouer pour la couleur donnée.
+        """
+        # Recherche du coup offrant la meilleure évaluation
         max_eval = float('-inf')
         best_move = None
         board_state = tuple(tuple(row) for row in board.grid)
@@ -88,7 +115,8 @@ class MinimaxAI:
             self.best_move_so_far = best_move
         self.visited_states[board_state] = max_eval 
         return best_move
-    
+
+    # Les méthodes d'évaluation utilisées pour estimer la valeur d'un plateau de jeu
     def absolu(self, board, color):
         return sum(cell == color for row in board.grid for cell in row)
     
@@ -139,6 +167,10 @@ class MinimaxAI:
 
     
     def evaluate_pos(self, board, color):
+        """
+        Sélectionne et applique la méthode d'évaluation en fonction de la configuration choisie.
+        """
+        # Appel de la méthode d'évaluation en fonction du choix de stratégie
         if(self.eval == "absolu"):
             return self.absolu(board, color)
         elif(self.eval == "positionnel 1"):
