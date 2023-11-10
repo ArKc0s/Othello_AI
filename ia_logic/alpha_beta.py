@@ -1,11 +1,24 @@
 import threading
 
 class AlphaBetaAI:
+    """
+    Classe implémentant l'algorithme de recherche Alpha-Beta pour le jeu Othello.
+    Cette IA utilise l'élagage alpha-bêta pour optimiser l'algorithme Minimax classique,
+    permettant ainsi une recherche plus rapide en éliminant les branches inférieures de l'arbre de recherche.
+    """
+    
     def __init__(self, depth, eval, timeout=5):
+        """
+        Initialisation de l'IA avec la profondeur de recherche, la méthode d'évaluation,
+        et le temps maximum de recherche pour chaque coup.
+        """
+        # Paramètres de configuration de l'IA
         self.depth = depth
         self.eval = eval
         self.timeout = timeout
         self.best_move_so_far = None
+
+        # Matrices de poids pour l'évaluation de la stratégie positionnelle
         self.position_weights = [
             [ 500, -150,  30,  10,  10,  30, -150,  500],
             [-150, -250, 0, 0, 0, 0, -250, -150],
@@ -26,16 +39,26 @@ class AlphaBetaAI:
             [-20, -50, -2, -2, -2, -2, -50, -20],
             [ 100, -20,  10,  5,  5,  10, -20,  100],
         ]
+
+        # Un dictionnaire pour stocker les états visités et leurs évaluations
         self.visited_states = {}
 
         print("AlphaBeta AI initialized with depth", depth)
 
     
     def timed_alphabeta(self, board, color):
+        """
+        Lance une recherche alphabeta avec un contrôle de temps.
+        """
         self.best_move_so_far = None
         self.best_move(board, color)
 
     def best_move_with_timeout(self, board, color):
+        """
+        Détermine le meilleur coup avec le contrôle du temps d'exécution.
+        Si le temps imparti est dépassé, le meilleur coup trouvé jusqu'à présent est retourné.
+        """
+         # Exécution de la recherche alphabeta dans un thread séparé pour respecter le timeout
         alphabeta_thread = threading.Thread(target=self.timed_alphabeta, args=(board, color))
         alphabeta_thread.start()
         alphabeta_thread.join(timeout=self.timeout)
@@ -47,9 +70,14 @@ class AlphaBetaAI:
         return self.best_move_so_far
 
     def alphabeta(self, board, depth, alpha, beta, maximizing, color):
+        """
+        Implémentation de l'algorithme de recherche alphabeta.
+        """
+        # Base de récursivité : si la profondeur est nulle ou le plateau est plein
         if depth == 0 or board.is_full():
             return self.evaluate_pos(board, color)
-        
+
+        # Traitement récursif des mouvements et application de l'élagage alpha-beta
         board_state = tuple(tuple(row) for row in board.grid)
         if board_state in self.visited_states:
             return self.visited_states[board_state]
@@ -80,6 +108,10 @@ class AlphaBetaAI:
             return min_eval
 
     def best_move(self, board, color):
+        """
+        Trouve le meilleur coup à jouer pour la couleur donnée.
+        """
+        # Recherche du coup offrant la meilleure évaluation
         max_eval = float('-inf')
         best_move = None
         alpha = float('-inf')
@@ -96,7 +128,8 @@ class AlphaBetaAI:
             self.best_move_so_far = best_move
         self.visited_states[board_state] = max_eval
         return best_move
-    
+
+    # Les méthodes d'évaluation utilisées pour estimer la valeur d'un plateau de jeu
     def absolu(self, board, color):
         return sum(cell == color for row in board.grid for cell in row)
     
@@ -147,6 +180,9 @@ class AlphaBetaAI:
 
     
     def evaluate_pos(self, board, color):
+        """
+        Sélectionne et applique la méthode d'évaluation en fonction de la configuration choisie.
+        """
         if(self.eval == "absolu"):
             return self.absolu(board, color)
         elif(self.eval == "positionnel 1"):
