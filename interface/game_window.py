@@ -5,7 +5,10 @@ from ia_logic.alpha_beta import AlphaBetaAI
 from ia_logic.nega_max import NegaMaxAI
 import time
 
+# Classe principale pour la fenêtre de jeu Othello.
 class GameWindow:
+
+    # Initialisation de la fenêtre de jeu et des éléments de base.
     def __init__(self):
         pygame.init()
         self.width, self.height = 1100, 800
@@ -15,6 +18,7 @@ class GameWindow:
         self.ia1 = None
         self.ia2 = None
 
+     # Affiche le menu principal et gère la sélection des options.
     def main_menu(self):
         running = True
         algo_menu1 = DropdownMenu(50, 550, 200, 40, ['minmax', 'alphabeta', 'negamax'], "Algo")
@@ -119,7 +123,7 @@ class GameWindow:
 
             pygame.display.flip()
 
-
+    # Dessine l'état actuel du jeu sur l'écran.
     def draw(self, mode, color):
         self.screen.fill((0, 200, 0)) 
         pygame.draw.rect(self.screen, (50,50,50), (self.height, 0, self.width - self.height, self.height))
@@ -146,11 +150,13 @@ class GameWindow:
                 elif self.board.grid[y][x] == 'W':
                     pygame.draw.circle(self.screen, (255, 255, 255), (int((x+0.5)*cell_size), int((y+0.5)*cell_size)), cell_size//2 - 5)
 
+    # Récupère la position de la grille en fonction des coordonnées du clic.
     def get_grid_position(self, x, y):
         row = y // (self.height / 8)
         col = x // (self.height / 8)
         return int(row), int(col)
 
+    # Affiche le gagnant à la fin du jeu et propose de retourner au menu.
     def display_winner(self):
         white_count = 0
         black_count = 0
@@ -195,7 +201,7 @@ class GameWindow:
 
         return 'main_menu'
 
-
+    # Exécute la boucle principale du jeu en fonction du mode sélectionné.
     def run(self, mode):
         game_over = False
         current_color = "W"  # Commence avec les blancs par exemple
@@ -332,7 +338,10 @@ class GameWindow:
                         self.run(mode)
                         return
 
+# Classe pour créer et gérer un menu déroulant.
 class DropdownMenu:
+    
+    # Initialise les paramètres du menu déroulant.
     def __init__(self, x, y, w, h, options, label):
         self.x = x
         self.y = y
@@ -345,6 +354,7 @@ class DropdownMenu:
         self.label = label
         self.label_font = pygame.font.SysFont(None, 24)
 
+    # Dessine le menu déroulant sur l'écran.
     def draw(self, screen):
         label_surface = self.label_font.render(self.label, True, (255, 255, 255))
         screen.blit(label_surface, (self.x, self.y - 30))
@@ -358,6 +368,7 @@ class DropdownMenu:
                 text = self.font.render(option, True, (255, 255, 255))
                 screen.blit(text, (self.x + 10, self.y + (i+1)*self.h + 10))
 
+    # Gère les événements d'interaction avec le menu déroulant.
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONUP:
             x, y = pygame.mouse.get_pos()
@@ -371,8 +382,10 @@ class DropdownMenu:
                         self.is_open = False
                         return True
         return False               
-                
+
+# Classe pour créer et gérer une zone de saisie de texte.
 class InputBox:
+    # Initialise les paramètres de la zone de saisie.
     def __init__(self, x, y, w, h, text='', label = ''):
         self.rect = pygame.Rect(x, y, w, h)
         self.color = (255, 255, 255)
@@ -382,6 +395,7 @@ class InputBox:
         self.label = label
         self.label_font = pygame.font.SysFont(None, 24)
 
+    # Gère les événements d'interaction avec la zone de saisie.
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
@@ -399,7 +413,8 @@ class InputBox:
                 else:
                     self.text += event.unicode
                 self.txt_surface = self.font.render(self.text, True, self.color)
-        
+
+    # Dessine la zone de saisie sur l'écran.
     def draw(self, screen):
         label_surface = self.label_font.render(self.label, True, (255, 255, 255))
         screen.blit(label_surface, (self.rect.x, self.rect.y - 30))
